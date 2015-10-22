@@ -2,5 +2,10 @@
 //This file is intended to be used as an index for finding common variables
 
 //namespaces
+var Commands = {};
+var KeyUtils = {};
+var VisualUtils = {};
 
 //global vars
+var jobs = [];
+var running = 0;
