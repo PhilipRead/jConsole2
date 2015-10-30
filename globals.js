@@ -7,5 +7,9 @@ var KeyUtils = {};
 var VisualUtils = {};
 
 //global vars
+var commands = [
+    'help'
+]
+
 var jobs = [];
 var running = 0;
