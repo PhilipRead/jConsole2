@@ -88,6 +88,7 @@ VisualUtils.queuePrint = function(textDatas) {
 VisualUtils.scrollPrint = function(textData, printManager) {
     if(textData.output.length > 0) {
         textData.container.append(textData.output[0]);
+        textData.container.get(0).scrollIntoView();
         textData.output = textData.output.slice(1);
         setTimeout(VisualUtils.scrollPrint, textData.outputSpeed, textData, printManager);
     }
@@ -121,4 +122,5 @@ VisualUtils.returnControl = function() {
     $('#input').attr('contenteditable', 'plaintext-only');
     $('#input').focus();
     $('#input').on('keydown', KeyUtils.inputKeyDownHandler);
+    $('#input').get(0).scrollIntoView();
 };

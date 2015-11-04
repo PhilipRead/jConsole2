@@ -16,7 +16,7 @@ Commands.execute = function(rawCommand) {
             Commands.help();
             return;
         default:
-            Commands.commandError();
+            Commands.commandError(command);
     }
 };
 
