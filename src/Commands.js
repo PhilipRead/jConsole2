@@ -2,15 +2,24 @@
 // Performs the specified command.
 // @param - rawCommmand: The unformated input command string from the user.
 Commands.execute = function(rawCommand) {
-    var commandInput = rawCommand.trim().replace(/\s+/g, ' ');
-    if(commandInput == '') {
+    rawCommand = rawCommand.trim().replace(/\s+/g, ' ');
+    if(rawCommand == '') {
         VisualUtils.returnControl();
         return;
     }
 
-    var splitCommand = commandInput.split(' ');
-    var command = splitCommand[0];
+    var splitCommand = rawCommand.split(' ');
+    var command = splitCommand.shift();
+    var args = splitCommand;
 
+    Commands.routeCommand(command, args);
+};
+
+// routeCommand function
+// Determines what command is being executed and performs the corresponding
+// @param - command: The command being executed.
+// @param - args: The arguments passed to the command.
+Commands.routeCommand = function(command, args) {
     switch(command) {
         case 'help':
             Commands.help();
