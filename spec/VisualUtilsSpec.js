@@ -50,7 +50,7 @@ describe('VisualUtils.flashOutput', function(){
     }); 
 });
 
-describe('VisualUtils.SerialPrintJob', function(){
+describe('SerialPrintJob', function(){
     describe('callback', function(){
         var testSerialJob;
         var testJob;

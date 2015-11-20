@@ -3,6 +3,7 @@
 
 //namespaces
 var Commands = {};
+var DirectoryUtils = {};
 var KeyUtils = {};
 var VisualUtils = {};
 
