@@ -2,7 +2,7 @@
 // Keydown handler for the command line.
 // @param - event: The keydown event.
 KeyUtils.inputKeyDownHandler = function(event) {
-    if(event.keyCode == KeyUtils.keyCode.ENTER) {
+    if(event.keyCode === KeyUtils.keyCode.ENTER) {
         VisualUtils.removeControl();
         var inputTxt = this.textContent;
         VisualUtils.clearInput();

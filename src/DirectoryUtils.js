@@ -108,15 +108,15 @@ function File(name, data) {
         }
         
         var parsedName = fullName.split('.');
-        if(parsedName[0] === ''){
+        if(parsedName[0] === '') {
             throw 'File name cannot be just an extension.';
         }
         
         var tempExt = parsedName.pop();
-        if(parsedName.length === 0 || tempExt === ''){
+        if(parsedName.length === 0 || tempExt === '') {
             this.__extension = null;
         }
-        else{
+        else {
             this.__extension = tempExt;
         }
 

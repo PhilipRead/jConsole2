@@ -51,7 +51,7 @@ describe('VisualUtils.flashOutput', function(){
 });
 
 describe('SerialPrintJob', function(){
-    describe('callback', function(){
+    describe('__callback', function(){
         var testSerialJob;
         var testJob;
         var testTextDatas;
@@ -61,13 +61,13 @@ describe('SerialPrintJob', function(){
             beforeAll(function(){
                 beforeRunning = running;
                 testTextDatas = [];
-                testJob = { textDatas: testTextDatas };
+                testJob = { _textDatas: testTextDatas };
                 
                 spyOn(VisualUtils, 'checkIfDone');
                 
                 testSerialJob = new SerialPrintJob(null);
                 running++;
-                testSerialJob.callback(testJob);
+                testSerialJob.__callback(testJob);
             });
             
             it('decrements the running counter by one', function(){
@@ -84,12 +84,12 @@ describe('SerialPrintJob', function(){
             beforeAll(function(){
                 firstTextData = 'testTextData1';
                 testTextDatas = [firstTextData, 'testTextData2', 'testTextData3'];
-                testJob = { textDatas: testTextDatas };
+                testJob = { _textDatas: testTextDatas };
                 
                 spyOn(VisualUtils, 'scrollPrint');
                 
                 testSerialJob = new SerialPrintJob(null);
-                testSerialJob.callback(testJob);
+                testSerialJob.__callback(testJob);
             });
             
             it('begins the next print job', function(){
@@ -100,8 +100,8 @@ describe('SerialPrintJob', function(){
     
     describe('start', function(){
         it('starts the job thread', function(){
-            var testCallback = jasmine.createSpy('callback');
-            var testThis = { callback: testCallback };
+            var testCallback = jasmine.createSpy('__callback');
+            var testThis = { __callback: testCallback };
             var testJob = new SerialPrintJob(null);
             testJob.start = testJob.start.bind(testThis);
     

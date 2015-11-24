@@ -3,7 +3,7 @@
 // @param - rawCommmand: The unformated input command string from the user.
 Commands.execute = function(rawCommand) {
     rawCommand = rawCommand.trim().replace(/\s+/g, ' ');
-    if(rawCommand == '') {
+    if(rawCommand === '') {
         VisualUtils.returnControl();
         return;
     }
@@ -36,7 +36,7 @@ Commands.help = function() {
     var tempOutDiv = $('#output');
     for(var i = 0; i < commands.length; i++) {
         var tempString = commands[i];
-        var tempDiv = $('<div></div>');
+        var tempDiv = $('<div/>');
         tempOutDiv.append(tempDiv);
         var nextTextData = new TextData(tempString, tempDiv, 20);
         textDatas.push(nextTextData);
@@ -51,7 +51,7 @@ Commands.help = function() {
 Commands.commandError = function(command) {
     var textDatas = [];
     var errorString = command + ' is not a recognized command on this system.';
-    var newDiv = $('<div></div>');
+    var newDiv = $('<div/>');
     $('#output').append(newDiv);
     textDatas.push(new TextData(errorString, newDiv, 20));
     VisualUtils.queuePrint(textDatas);

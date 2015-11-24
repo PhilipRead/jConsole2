@@ -19,14 +19,15 @@ VisualUtils.outputNewLines = function(numLines, htmlContainer) {
 // @param - outString: The string to print.
 // @param - htmlContainer: The container to print to.
 VisualUtils.flashOutput = function(outString, htmlContainer) {
-    htmlContainer.append('<div>' + outString + '</div>');
+    var newDiv = $('<div/>').append(outString);
+    htmlContainer.append(newDiv);
 };
 
 // TextData class
 // Object used to store all the Job data for a string printing job.
-// @field - output: The string to print.
-// @field - container: The jQuery html container to print the string to.
-// @field - outputSpeed: An integer representing the number of milliseconds
+// @field public - output: The string to print.
+// @field public - container: The jQuery html container to print the string to.
+// @field public - outputSpeed: An integer representing the number of milliseconds
 //      between character prints.
 function TextData(stringToPrint, htmlContainer, speedToPrint) {
     this.output = stringToPrint;
@@ -36,16 +37,16 @@ function TextData(stringToPrint, htmlContainer, speedToPrint) {
 
 // SerialPrintJob class
 // Object used to print a series of strings in order.
-// @field - textDatas: The list of TextData objects to be printed in order.
-// @function - callback: The function that prints the next TextData object.
-// @function - start: The function that begins the printing of the TextData objects.
-// @function - continue: The function is the same as the start function. Added
-//      for clarity when continuing the serial print job.
+// @field protected - _textDatas: The list of TextData objects to be printed in order.
 function SerialPrintJob(textDatas) {
-    this.textDatas = textDatas;
-    this.callback = function(job) {
-        if(job.textDatas.length > 0) {
-            var nextTextData = job.textDatas.shift();
+    this._textDatas = textDatas;
+
+    // __callback private function
+    // Prints the next TextData object.
+    // @param - job: The reference to the SerialPrintJob that is currently printing.
+    this.__callback = function(job) {
+        if(job._textDatas.length > 0) {
+            var nextTextData = job._textDatas.shift();
             VisualUtils.scrollPrint(nextTextData, job);
         }
         else {
@@ -53,9 +54,15 @@ function SerialPrintJob(textDatas) {
             VisualUtils.checkIfDone();
         }
     };
+    
+    // start public function
+    // Starts the execution thread of this SerialPrintJob.
     this.start = function() {
-        setTimeout(this.callback, 1, this);
+        setTimeout(this.__callback, 1, this);
     };
+    
+    // continue public function
+    // Continues the execution of the SerialPrintJob thread.
     this.continue = this.start;
 };
 
@@ -74,7 +81,9 @@ VisualUtils.execute = function() {
 // Sets up a serially trigged set of print jobs and pushes onto jobs array.
 // @param - textDatas: The list of TextData objects that will print.
 VisualUtils.queuePrint = function(textDatas) {
-    if(textDatas == null) { return; }
+    if(!textDatas) { 
+        return; 
+    }
 
     var tempJob = new SerialPrintJob(textDatas);
     jobs.push(tempJob);
@@ -101,7 +110,7 @@ VisualUtils.scrollPrint = function(textData, printManager) {
 // checkIfDone function
 // Detects if printing is completed and returns control if it is.
 VisualUtils.checkIfDone = function() {
-    if(running == 0) {
+    if(running === 0) {
         VisualUtils.returnControl();
     }
 };
