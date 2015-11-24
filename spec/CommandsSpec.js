@@ -103,7 +103,7 @@ describe('Commands.execute', function(){
     });
 });
 
-describe('Command.routeCommand', function(){
+describe('Commands.routeCommand', function(){
     var command;
     var args;
     
@@ -129,10 +129,11 @@ describe('Command.routeCommand', function(){
 });
 
 describe('Commands.help', function(){
+    Setup.startUp();
     var textDatas = [];
-    for(var i = 0; i < commands.length; i++) {
-        var tempString = commands[i];
-        var tempDiv = $('<div></div>');
+    for(var i = 0; i < system.commands.length; i++) {
+        var tempString = system.commands[i];
+        var tempDiv = $('<div/>');
         var nextTextData = new TextData(tempString, tempDiv, 20);
         textDatas.push(nextTextData);
     }
@@ -157,7 +158,7 @@ describe('Commands.commandError', function(){
         var command = 'testCommand';
         var textDatas = [];
         var errorString = command + ' is not a recognized command on this system.';
-        var newDiv = $('<div></div>');
+        var newDiv = $('<div/>');
         textDatas.push(new TextData(errorString, newDiv, 20));
         
         beforeAll(function(){

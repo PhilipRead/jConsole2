@@ -50,7 +50,7 @@ function SerialPrintJob(textDatas) {
             VisualUtils.scrollPrint(nextTextData, job);
         }
         else {
-            --running;
+            --system.running;
             VisualUtils.checkIfDone();
         }
     };
@@ -69,12 +69,12 @@ function SerialPrintJob(textDatas) {
 // execute function
 // Function executes all the queued jobs
 VisualUtils.execute = function() {
-    running += jobs.length;
+    system.running += system.jobs.length;
     VisualUtils.removeControl();
-    for(var i = 0; i < jobs.length; i++) {
-        jobs[i].start();
+    for(var i = 0; i < system.jobs.length; i++) {
+        system.jobs[i].start();
     }
-    jobs = [];
+    system.jobs = [];
 };
 
 // queuePrint function
@@ -86,7 +86,7 @@ VisualUtils.queuePrint = function(textDatas) {
     }
 
     var tempJob = new SerialPrintJob(textDatas);
-    jobs.push(tempJob);
+    system.jobs.push(tempJob);
 };
 
 // scrollPrint function
@@ -110,7 +110,7 @@ VisualUtils.scrollPrint = function(textData, printManager) {
 // checkIfDone function
 // Detects if printing is completed and returns control if it is.
 VisualUtils.checkIfDone = function() {
-    if(running === 0) {
+    if(system.running === 0) {
         VisualUtils.returnControl();
     }
 };

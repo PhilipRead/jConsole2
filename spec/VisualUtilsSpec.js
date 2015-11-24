@@ -59,19 +59,19 @@ describe('SerialPrintJob', function(){
         describe('is called with a job that has no more strings to print', function(){
             var beforeRunning;
             beforeAll(function(){
-                beforeRunning = running;
+                beforeRunning = system.running;
                 testTextDatas = [];
                 testJob = { _textDatas: testTextDatas };
                 
                 spyOn(VisualUtils, 'checkIfDone');
                 
                 testSerialJob = new SerialPrintJob(null);
-                running++;
+                system.running++;
                 testSerialJob.__callback(testJob);
             });
             
             it('decrements the running counter by one', function(){
-                expect(running).toBe(beforeRunning);
+                expect(system.running).toBe(beforeRunning);
             });
             
             it('checks if all jobs are done', function(){
@@ -129,7 +129,7 @@ describe('VisualUtils.execute', function(){
             testJobs[i] = { start: testStarts[i] };
         }
         
-        jobs = testJobs;
+        system.jobs = testJobs;
         
         spyOn(VisualUtils, 'removeControl');
         
@@ -137,7 +137,7 @@ describe('VisualUtils.execute', function(){
     });
     
     it('sets the global running to the number of jobs', function(){
-        expect(running).toBe(testJobs.length);
+        expect(system.running).toBe(testJobs.length);
     });
     
     it('removes control from the user', function(){
@@ -151,7 +151,7 @@ describe('VisualUtils.execute', function(){
     });
     
     it('sets the jobs list to empty', function(){
-        expect(jobs).toEqual([]);
+        expect(system.jobs).toEqual([]);
     });
 });
 
@@ -161,17 +161,17 @@ describe('VisualUtils.queuePrint', function(){
     
     describe('is called with a null arg', function(){
         it('does not queue up a new job', function(){
-            origJobsLen = jobs.length;
+            origJobsLen = system.jobs.length;
             VisualUtils.queuePrint(null);
             
-            expect(jobs.length).toBe(origJobsLen);
+            expect(system.jobs.length).toBe(origJobsLen);
         });
     });
     
     describe('is called with a list of TextDatas', function(){
         beforeAll(function(){
             testTextDatas = ['testTextData1', 'testTextData2', 'testTextData3'];
-            origJobsLen = jobs.length;
+            origJobsLen = system.jobs.length;
             
             spyOn(window, 'SerialPrintJob');
             
@@ -179,7 +179,7 @@ describe('VisualUtils.queuePrint', function(){
         });
         
         afterAll(function(){
-            jobs = [];
+            system.jobs = [];
         });
         
         it('creates a new SerialPrintJob', function(){
@@ -187,7 +187,7 @@ describe('VisualUtils.queuePrint', function(){
         });
         
         it('adds a new job to the jobs list', function(){
-            expect(jobs.length).toBe(origJobsLen + 1);
+            expect(system.jobs.length).toBe(origJobsLen + 1);
         });
     });
 });
@@ -292,27 +292,27 @@ describe('VisualUtils.scrollPrint', function(){
 describe('VisualUtils.checkIfDone', function(){
     describe('is called when jobs are still running', function(){
         it('does not return control to the user', function(){
-            running = 1;
+            system.running = 1;
             spyOn(VisualUtils, 'returnControl');
             
             VisualUtils.checkIfDone();
             
             expect(VisualUtils.returnControl).not.toHaveBeenCalled();
             
-            running = 0;
+            system.running = 0;
         });
     });
     
     describe('is called when no jobs are running', function(){
         it('returns control to the user', function(){
-            running = 0;
+            system.running = 0;
             spyOn(VisualUtils, 'returnControl');
             
             VisualUtils.checkIfDone();
             
             expect(VisualUtils.returnControl).toHaveBeenCalled();
             
-            running = 0;
+            system.running = 0;
         });
     });
 });

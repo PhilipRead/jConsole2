@@ -34,9 +34,9 @@ Commands.routeCommand = function(command, args) {
 Commands.help = function() {
     var textDatas = [];
     var tempOutDiv = $('#output');
-    for(var i = 0; i < commands.length; i++) {
-        var tempString = commands[i];
-        var tempDiv = $('<div/>');
+    for(var i = 0; i < system.commands.length; i++) {
+        var tempString = system.commands[i];
+        var tempDiv = $('<div></div>');
         tempOutDiv.append(tempDiv);
         var nextTextData = new TextData(tempString, tempDiv, 20);
         textDatas.push(nextTextData);

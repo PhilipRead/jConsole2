@@ -6,11 +6,8 @@ var Commands = {};
 var DirectoryUtils = {};
 var KeyUtils = {};
 var VisualUtils = {};
+var Setup = {};
+var SystemUtils = {};
 
 //global vars
-var commands = [
-    'help'
-]
-
-var jobs = [];
-var running = 0;
+var system;
