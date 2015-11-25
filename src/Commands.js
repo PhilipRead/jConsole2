@@ -1,3 +1,16 @@
+// Command class
+// Base object used to create a console command.
+// @field protected - _name: The name of the Command.
+// @field protected - _execute: Function that is used to perform the desired functionality for the Command.
+function Command(name, execute) {
+    this.__name = name;
+    this.__execute = execute;
+    
+    this.getName = function() {
+        return this.__name;
+    };
+};
+
 // execute function
 // Performs the specified command.
 // @param - rawCommmand: The unformated input command string from the user.
