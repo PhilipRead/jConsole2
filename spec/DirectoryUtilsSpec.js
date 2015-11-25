@@ -23,6 +23,56 @@ describe('Directory', function(){
 
 
 describe('Folder', function(){
+    describe('constructor', function(){
+        it('initializes the Folder name properly', function(){
+            var testName = 'testName';
+            var testFolder = new Folder(testName);
+            
+            expect(testFolder._name).toBe(testName);
+        });
+    });
+    
+    describe('__setName', function(){
+        var testFolder;
+        var testName;
+        var testCaller;
+        
+        describe('is called with a null name', function(){
+            it('throws the error "Folder name must not be empty."', function(){
+                testName = null;
+                testFolder = new Folder();
+                testCaller = function(){
+                    testFolder.__setName(testName);
+                };
+                
+                expect(testCaller).toThrow('Folder name must not be empty.');
+            });
+        });
+        
+        describe('is called with an empty string', function(){
+            it('throws the error "Folder name must not be empty."', function(){
+                testName = '';
+                testFolder = new Folder();
+                testCaller = function(){
+                    testFolder.__setName(testName);
+                };
+                
+                expect(testCaller).toThrow('Folder name must not be empty.');
+            });
+        })
+        
+        describe('is called with a non-empty string', function(){
+            it('assigns the name properly', function(){
+                testName = 'testName';
+                testFolder = new Folder();
+                
+                testFolder.__setName(testName);
+                
+                expect(testFolder._name).toBe(testName);
+            });
+        });
+    });
+    
     describe('getPath', function(){
         it('returns the path of the Folder', function(){
             var testParentPath = "Test Parent Path";
@@ -45,45 +95,24 @@ describe('Folder', function(){
     
     describe('addChild', function(){
         describe('is called when the Folder already contains a child Directory with same name', function(){
-            var testNewChild;
-            var testChildName;
-            var testOrigChild;
-            var testChildParent;
-            var testThis;
-            var testChildren;
-            var testFolder;
-            var returnValue;
-            
-            
-            beforeAll(function(){
-                testChildParent = { name: 'testChildParent' };
-                testChildName = 'TestChildName';
-                testNewChild = {
-                    _parent: testChildParent,
-                    _name: testChildName
-                };
-                testChildren = [];
-                testOrigChild = { name: 'testOrigChild' };
-                testChildren[testChildName] = testOrigChild;
-                testThis = {
-                    _children: testChildren
-                };
-                testFolder = new Folder(null);
-                testFolder.addChild = testFolder.addChild.bind(testThis);
+            it('throws a context specific error', function(){
+                var testFolderName = "TestFolder";
+                var testFolder = new Folder(testFolderName);
+                var testOrigChildName = 'TestOrigChildName';
+                var testOrigChild = {
+                    _name: testOrigChildName
+                }
+                testFolder._children[testOrigChild._name] = testOrigChild;
+                var testNewChildName = testOrigChildName;
+                var testNewChild = {
+                    _name: testNewChildName
+                }
+                var testCaller = function() {
+                    testFolder.addChild(testNewChild);
+                }
+                var testErrorMessage = testFolderName + ' already contains a directory named ' + testNewChildName;
                 
-                returnValue = testFolder.addChild(testNewChild);
-            });
-            
-            it('does not overwrite the already existing child Directory', function(){
-                expect(testThis._children[testChildName]).toBe(testOrigChild);
-            });
-            
-            it('does not overwrite the already existing parent of the child Directory', function(){
-                expect(testNewChild._parent).toBe(testChildParent);
-            });
-            
-            it('confirms failure to add', function(){
-                expect(returnValue).toBe(false);
+                expect(testCaller).toThrow(testErrorMessage);
             });
         });
         
@@ -111,7 +140,7 @@ describe('Folder', function(){
                 testThis = {
                     _children: testChildren
                 };
-                testFolder = new Folder(null);
+                testFolder = new Folder();
                 testFolder.addChild = testFolder.addChild.bind(testThis);
                 
                 returnValue = testFolder.addChild(testNewChild);
@@ -124,10 +153,6 @@ describe('Folder', function(){
             it("sets the child Directory's parent to the Folder", function(){
                 expect(testNewChild._parent).toBe(testThis);
             });
-            
-            it('confirms add was successuful', function(){
-                expect(returnValue).toBe(true);
-            });
         });
     });
     
@@ -137,7 +162,7 @@ describe('Folder', function(){
         
         beforeAll(function(){
             testThis = jasmine.createSpyObj('testThis', ['_removeChildren', '_removeFromParent']);
-            testFolder = new Folder(null);
+            testFolder = new Folder();
             testFolder.remove = testFolder.remove.bind(testThis);
             
             testFolder.remove();
@@ -168,7 +193,7 @@ describe('Folder', function(){
             testThis = {
                 _children: testChildren
             };
-            testFolder = new Folder(null);
+            testFolder = new Folder();
             testFolder._removeChildren = testFolder._removeChildren.bind(testThis);
             
             spyOn(Object, 'keys').and.callThrough();
@@ -244,7 +269,7 @@ describe('File', function(){
         describe('is called with an empty full name', function(){
             it('throws the error "File name must not be empty"', function(){
                 testFullName = '';
-                testFile = new File('Placeholder', null);
+                testFile = new File();
                 testCaller = function(){
                     testFile.__setName(testFullName);
                 };
@@ -256,7 +281,7 @@ describe('File', function(){
         describe('is called with only an extension', function(){
             it('throws the error "File name cannot be just an extension."', function(){
                 testFullName = '.TestExtension';
-                testFile = new File('Placeholder', null);
+                testFile = new File();
                 testCaller = function(){
                     testFile.__setName(testFullName);
                 };
@@ -271,7 +296,7 @@ describe('File', function(){
                     testName = 'TestName.';
                     testExtension = '';
                     testFullName = testName + testExtension;
-                    testFile = new File('Placeholder', null);
+                    testFile = new File();
                     
                     testFile.__setName(testFullName);
                 });
@@ -290,7 +315,7 @@ describe('File', function(){
                     testName = 'TestName';
                     testExtension = '';
                     testFullName = testName + testExtension;
-                    testFile = new File('Placeholder', null);
+                    testFile = new File();
                     
                     testFile.__setName(testFullName);
                 });
@@ -311,7 +336,7 @@ describe('File', function(){
                 testName = 'TestName';
                 testExtension = 'TestExtension';
                 testFullName = testName + '.' + testExtension;
-                testFile = new File('Placeholder', null);
+                testFile = new File();
                 
                 testFile.__setName(testFullName);
             });
@@ -339,7 +364,7 @@ describe('File', function(){
                 _name: testName
             };
             var fullTestPath = testParentPath + testName;
-            var testFile = new File('Placeholder', null);
+            var testFile = new File();
             testFile.getPath = testFile.getPath.bind(testThis);
             
             expect(testFile.getPath()).toBe(fullTestPath);
@@ -349,7 +374,7 @@ describe('File', function(){
     describe('remove', function(){
         it('removes the file from the parent Folder', function(){
             var testThis = jasmine.createSpyObj('testThis', ['_removeFromParent']);
-            var testFile = new File('Placeholder', null);
+            var testFile = new File();
             testFile.remove = testFile.remove.bind(testThis);
             
             testFile.remove();

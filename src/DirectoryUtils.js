@@ -17,9 +17,27 @@ function Directory() {
 // Object used to represent a system folder.
 // @field protected - _name: The name of the Folder.
 // @field protected - _children: Hash of Directories by name that this Folder will hold.
+// @throws - An error if name is empty or null.
 function Folder(name) {
-    this._name = name;
+    this._name = null;
     this._children = [];
+    
+    // __setName private function
+    // Verifies and sets the name of this folder.
+    // @param - name: The name to set this Folder to.
+    // @throws - An error if name is empty or null.
+    this.__setName = function(name) {
+        if(name === undefined) { //For inheritence
+            return;
+        }
+        
+        if(!name) {
+            throw 'Folder name must not be empty.';
+        }
+
+        this._name = name;
+    };
+    this.__setName(name);
     
     // getPath public function
     // Gets the full path of this Folder.
@@ -31,15 +49,13 @@ function Folder(name) {
     // addChild public function
     // Adds the specified Directory to this folder.
     // @param - newChild: The Directory to add to this folder.
-    // @return true if added successfully
-    //      else returns false if child already exists.
+    // @throws - An error if newChild already exists.
     this.addChild = function(newChild) {
         if(this._children[newChild._name]) {
-            return false;
+            throw(this._name + ' already contains a directory named ' + newChild._name);
         }
         this._children[newChild._name] = newChild;
         newChild._parent = this;
-        return true;
     };
     
     // remove public function
@@ -103,6 +119,10 @@ function File(name, data) {
     // @throws - An error if name is empty
     //      or contains just an extension.
     this.__setName = function(fullName) {
+        if(fullName === undefined) { //For inheritence
+            return;
+        }
+        
         if(!fullName) {
             throw 'File name must not be empty.';
         }
