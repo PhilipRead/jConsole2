@@ -1,4 +1,15 @@
 describe('Directory', function(){
+    describe('getName', function(){
+        it('returns the Directory name', function(){
+            var testName = 'Test Name';
+            var testDirectory = new Directory;
+            
+            testDirectory._name = testName;
+            
+            expect(testDirectory.getName()).toBe(testName);
+        });
+    });
+    
     describe('_removeFromParent', function(){
         it('removes the Directory from this parent', function(){
             var testName = 'Test Name';
@@ -90,6 +101,23 @@ describe('Folder', function(){
             testFolder.getPath = testFolder.getPath.bind(testThis);
             
             expect(testFolder.getPath()).toBe(fullTestPath);
+        });
+    });
+    
+    describe('getChildren', function(){
+        it('returns the children of the Folder', function(){
+            var testFolder = new Folder();
+            var testChildren = [];
+            for(var i=0; i<3; i++){
+                var curTestChild = new Folder('Test Child' + i);
+                testChildren.push(curTestChild);
+                testFolder.addChild(curTestChild);
+            }
+            
+            var testResult = testFolder.getChildren();
+            var bothSame = $(testResult).not(testChildren).length === 0 && $(testChildren).not(testResult).length === 0;
+            
+            expect(bothSame).toBe(true);
         });
     });
     

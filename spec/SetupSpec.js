@@ -139,3 +139,94 @@ describe('Setup.initDirTree', function(){
         });
     });
 });
+
+describe('Setup.saveDirTree', function(){
+    describe('is called with no children in the array', function(){
+        it('returns the array unchanged', function(){
+            var testChildren = [];
+            
+            expect(Setup.saveDirTree(testChildren)).toEqual(testChildren);
+        });
+    });
+    
+    describe('is called with children in the array', function(){
+        describe('where one child is of an unknown type', function(){
+            it('throws an error complaining about unknown type', function(){
+                var testChildren = [];
+                var testChild = {};
+                testChildren.push(testChild);
+                var testCaller = function(){
+                    Setup.saveDirTree(testChildren);
+                };
+                var testMessage = 'Child type is not a known type.';
+                
+                expect(testCaller).toThrow(testMessage);
+            });
+        });
+        
+        describe('that contains a File child type', function(){
+            var testChildren = [];
+            var testName = 'Test Name';
+            var testData = 'Test Data';
+            var testChild = new File(testName, testData);
+            testChildren.push(testChild);
+            
+            var testResult = Setup.saveDirTree(testChildren);
+            
+            it('saves the type to "File"', function(){
+                expect(testResult[0].type).toEqual('File');
+            });
+            
+            it('saves the File data', function(){
+                expect(testResult[0].data).toEqual(testData);
+            });
+        });
+        
+        describe('that contains a Folder child type', function(){
+            var testChildren;
+            var testName;
+            var testGrandChildren;
+            var testChild;
+            var testResult;
+            
+            beforeAll(function(){
+                testChildren = [];
+                testName = 'Test Name';
+                testGrandChildren = [];
+                testChild = new Folder(testName);
+                for(var i=0; i<3; i++){
+                    var gChild = new Folder('Test gChild' + i);
+                    testGrandChildren.push(gChild);
+                    testChild.addChild(gChild);
+                }
+                testChildren.push(testChild);
+                
+                spyOn(Setup, 'saveDirTree').and.callThrough();
+                
+                testResult = Setup.saveDirTree(testChildren);
+            });
+            
+            it('saves the type to "Folder"', function(){
+                expect(testResult[0].type).toEqual('Folder');
+            });
+            
+            it('saves the grand children', function(){
+                expect(Setup.saveDirTree).toHaveBeenCalledWith(testGrandChildren);
+            });
+        });
+        
+        it('saves the Directory names', function(){
+            var testChildren = [];
+            for(var i=0; i<3; i++){
+                var testChild = new Folder('testChild' + i);
+                testChildren.push(testChild);
+            }
+            
+            var testResult = Setup.saveDirTree(testChildren);
+            
+            for(var i=0; i<3; i++){
+                expect(testResult[i].name).toEqual('testChild' + i);
+            }
+        });
+    });
+});

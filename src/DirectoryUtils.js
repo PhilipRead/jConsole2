@@ -6,6 +6,13 @@ function Directory() {
     this._name = null;
     this._parent = null;
     
+    // getName public function
+    // Gets the Directory's name.
+    // @return - The name of the Directory as a string.
+    this.getName = function() {
+        return this._name;
+    };
+    
     // _removeFromParent protected function
     // Removes the Directory from the parent Directory.
     this._removeFromParent = function() {
@@ -44,6 +51,18 @@ function Folder(name) {
     // @return - The full path as a string.
     this.getPath = function() {
         return(this._parent.getPath() + this._name + '/');
+    };
+    
+    // getChildren public function
+    // Gets the children of the Folder.
+    // @return - An array of the children Directories.
+    this.getChildren = function() {
+        var childArr = [];
+        var dirNames = Object.keys(this._children);
+        for(var i=0; i<dirNames.length; i++){
+            childArr.push(this._children[dirNames[i]]);
+        }
+        return childArr;
     };
     
     // addChild public function
