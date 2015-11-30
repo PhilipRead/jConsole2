@@ -65,6 +65,43 @@ function Folder(name) {
         return childArr;
     };
     
+    // sortedChildNames public function
+    // Builds a sorted list of formatted child names.
+    // @returns - A list of the formatted child names.
+    this.sortedChildNames = function(){
+        var childNames = Object.keys(this._children);
+        var objList = [];
+        for(var i=0; i<childNames.length; i++){
+            objList.push(this._children[childNames[i]]);
+        }
+        
+        objList.sort(function(childA,childB){
+            var nameA = childA._name;
+            var nameB = childB._name;
+            
+            if(nameA < nameB) {
+                return -1;
+            }
+            if(nameA > nameB) {
+                return 1;
+            }
+            return 0;
+        });
+        
+        var sortedNames = [];
+        for(var i=0; i<objList.length; i++) {
+            if(objList[i] instanceof Folder){
+                sortedNames.push(objList[i]._name + '/');
+            }
+            else
+            {
+                sortedNames.push(objList[i]._name);
+            }
+        }
+        
+        return sortedNames;
+    };
+    
     // addChild public function
     // Adds the specified Directory to this folder.
     // @param - newChild: The Directory to add to this folder.

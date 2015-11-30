@@ -121,6 +121,50 @@ describe('Folder', function(){
         });
     });
     
+    describe('sortedChildNames', function(){
+        describe('is called with a Folder child', function(){
+            it('formats the Folder name correctly', function(){
+                var testFolder = new Folder();
+                var testName = "testName";
+                var formattedName = testName + '/';
+                testFolder.addChild(new Folder(testName));
+                
+                var testResult = testFolder.sortedChildNames();
+                
+                expect(testResult[0]).toEqual(formattedName);
+            });
+        });
+        
+        describe('is called with File child', function(){
+            it('formats the File name correctly', function(){
+                var testFolder = new Folder();
+                var testName = "testName.txt";
+                testFolder.addChild(new File(testName, null));
+                
+                var testResult = testFolder.sortedChildNames();
+                
+                expect(testResult[0]).toEqual(testName);
+            });
+        });
+        
+        describe('is called with Folder and File children', function(){
+            it('formats and orders the names correctly', function(){
+                var testFolder = new Folder();
+                testFolder.addChild(new Folder('123'));
+                testFolder.addChild(new Folder('Fol'));
+                testFolder.addChild(new Folder('fol'));
+                testFolder.addChild(new File('987', null));
+                testFolder.addChild(new File('File', null));
+                testFolder.addChild(new File('file', null));
+                var expectedResult = ['123/', '987', 'File', 'Fol/', 'file', 'fol/'];
+                
+                var testResult = testFolder.sortedChildNames();
+                
+                expect(testResult).toEqual(expectedResult);
+            });
+        });
+    });
+    
     describe('addChild', function(){
         describe('is called when the Folder already contains a child Directory with same name', function(){
             it('throws a context specific error', function(){
