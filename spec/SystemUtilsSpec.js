@@ -26,4 +26,43 @@ describe('System', function() {
             ]);
         });
     });
+    
+    describe('saveSystem', function(){
+        var testThis;
+        var testRoot;
+        var expecSystemJSON;
+        var expecSystemStr;
+        
+        beforeAll(function(){
+            testRoot = jasmine.createSpyObj('testRoot', ['getChildren']);
+            testRoot.getChildren.and.returnValue([]);
+            testThis = {
+                root: testRoot
+            };
+            system.saveSystem = system.saveSystem.bind(testThis);
+            expecSystemJSON = {
+                "dirTreeJSON":{
+                    "children":[]
+                }
+            };
+            expecSystemStr = JSON.stringify(expecSystemJSON);
+            
+            spyOn(JSON, 'stringify').and.callThrough();
+            spyOn(localStorage, 'setItem');
+            
+            system.saveSystem();
+        });
+
+        it('converts the directory tree to a JSON object', function(){
+            expect(testRoot.getChildren).toHaveBeenCalled();
+        });
+        
+        it('converts the system JSON object to a string', function(){
+            expect(JSON.stringify).toHaveBeenCalledWith(expecSystemJSON);
+        });
+        
+        it('saves the string to local storage', function(){
+            expect(localStorage.setItem).toHaveBeenCalledWith('jConsoleSystem', expecSystemStr);
+        });
+    });
 });

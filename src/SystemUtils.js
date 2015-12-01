@@ -11,4 +11,21 @@ function System() {
     this.commands = [
         'help'
     ];
+    
+    // saveSystem function
+    // Function that saves the current state of the System instance.
+    // NOTE: Not all fields are saved! Static or volatile fields are ignored.
+    this.saveSystem = function() {
+        var dirTreeJSON = {
+            "children": Setup.saveDirTree(this.root.getChildren())
+        };
+        
+        var systemJSON = {
+            "dirTreeJSON": dirTreeJSON
+        };
+        
+        var systemStr = JSON.stringify(systemJSON);
+        
+        localStorage.setItem('jConsoleSystem', systemStr);
+    };
 };
