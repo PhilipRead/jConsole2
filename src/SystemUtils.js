@@ -28,4 +28,15 @@ function System() {
         
         localStorage.setItem('jConsoleSystem', systemStr);
     };
+    
+    // loadSystem function
+    // Function that loads the saved state of th System instance.
+    this.loadSystem = function() {
+        var systemStr = localStorage.getItem('jConsoleSystem');
+        
+        var systemJSON = JSON.parse(systemStr);
+        var dirTreeJSON = systemJSON.dirTreeJSON;
+        
+        this.root = Setup.initDirTree(this.root, dirTreeJSON.children);
+    }
 };

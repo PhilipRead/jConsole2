@@ -16,7 +16,7 @@ function Directory() {
     // _removeFromParent protected function
     // Removes the Directory from the parent Directory.
     this._removeFromParent = function() {
-        this._parent._children[this._name] = null;
+        delete this._parent._children[this._name];
     };
 };
 
