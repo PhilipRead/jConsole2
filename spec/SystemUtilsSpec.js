@@ -47,6 +47,7 @@ describe('System', function() {
             };
             expecSystemStr = JSON.stringify(expecSystemJSON);
             
+            spyOn(Setup, 'saveDirTree').and.callThrough();
             spyOn(JSON, 'stringify').and.callThrough();
             spyOn(localStorage, 'setItem');
             
@@ -55,6 +56,7 @@ describe('System', function() {
 
         it('converts the directory tree to a JSON object', function(){
             expect(testRoot.getChildren).toHaveBeenCalled();
+            expect(Setup.saveDirTree).toHaveBeenCalled();
         });
         
         it('converts the system JSON object to a string', function(){
@@ -63,6 +65,46 @@ describe('System', function() {
         
         it('saves the string to local storage', function(){
             expect(localStorage.setItem).toHaveBeenCalledWith('jConsoleSystem', expecSystemStr);
+        });
+    });
+    
+    describe('loadSystem', function(){
+        var initialSystem;
+        var expecSystemJSON;
+        var expecSystemStr;
+        
+        beforeAll(function(){
+            initialSystem = localStorage.getItem('jConsoleSystem');
+            expecSystemJSON = {
+                "dirTreeJSON":{
+                    "children":[]
+                }
+            };
+            expecSystemStr = JSON.stringify(expecSystemJSON);
+            localStorage.setItem('jConsoleSystem', expecSystemStr);
+            
+            spyOn(JSON, 'parse').and.callThrough();
+            spyOn(localStorage, 'getItem').and.callThrough();
+            spyOn(Setup, 'initDirTree').and.callThrough();
+            
+            system.loadSystem();
+        });
+        
+        it('retrieves the JSON string from local storage', function(){
+            expect(localStorage.getItem).toHaveBeenCalledWith('jConsoleSystem');
+        });
+        
+        it('converts the JSON string to a JSON object', function(){
+            expect(JSON.parse).toHaveBeenCalledWith(expecSystemStr);
+        });
+        
+        it('converts the JSON directory tree object to the system directory tree object', function(){
+            expect(Setup.initDirTree).toHaveBeenCalled();
+            expect(system.root.getChildren()).toEqual([]);
+        });
+        
+        afterAll(function(){
+           localStorage.setItem('jConsoleSystem', initialSystem); 
         });
     });
 });

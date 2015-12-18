@@ -27,7 +27,7 @@ describe('Directory', function(){
             
             testDirectory._removeFromParent();
             
-            expect(testChildren[testName]).toBe(null);
+            expect(testChildren[testName]).toBe(undefined);
         });
     });
 });
