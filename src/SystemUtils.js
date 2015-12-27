@@ -6,6 +6,7 @@
 // @field pulbic - commands: The list of commands on this system.
 function System() {
     this.root = new Root();
+    this.curFolder = this.root;
     this.jobs = [];
     this.running = 0;
     this.commands = [

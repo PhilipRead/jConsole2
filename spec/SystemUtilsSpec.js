@@ -12,6 +12,10 @@ describe('System', function() {
             expect(testSystem.root).toEqual(jasmine.any(Root));
         });
         
+        it('sets the current folder to the intialized root', function(){
+            expect(testSystem.curFolder).toEqual(testSystem.root);
+        });
+        
         it('initializes an empty list of jobs', function(){
             expect(testSystem.jobs).toEqual([]);
         });
