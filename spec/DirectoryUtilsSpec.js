@@ -335,6 +335,105 @@ describe('Folder', function(){
             });
         });
     });
+    
+    describe('getFolder', function(){
+        var testFol;
+        var returnResult;
+        var getChildSpy;
+        var testChild;
+        var folName;
+        
+        describe('is called with no arguments', function(){
+            beforeAll(function(){
+                testFol = new Folder();
+                testChild = null;
+                testThis = {};
+                
+                getChildSpy = jasmine.createSpy('getChild').and.returnValue(testChild);
+                testThis.getChild = getChildSpy;
+                testFol.getFolder = testFol.getFolder.bind(testThis);
+                
+                returnResult = testFol.getFolder();
+            });
+            
+            it('retrieves the child directory', function(){
+                expect(getChildSpy).toHaveBeenCalled();
+            });
+            
+            it('returns null', function(){
+                expect(returnResult).toBe(null);
+            });
+        });
+        
+        describe('is called with a null argument', function(){
+            beforeAll(function(){
+                testFol = new Folder();
+                testChild = null;
+                testThis = {};
+                folName = null;
+                
+                getChildSpy = jasmine.createSpy('getChild').and.returnValue(testChild);
+                testThis.getChild = getChildSpy;
+                testFol.getFolder = testFol.getFolder.bind(testThis);
+                
+                returnResult = testFol.getFolder(folName);
+            });
+            
+            it('retrieves the child directory', function(){
+                expect(getChildSpy).toHaveBeenCalledWith(folName);
+            });
+            
+            it('returns null', function(){
+                expect(returnResult).toBe(null);
+            });
+        });
+        
+        describe('is called with a name that is a File child of the Folder', function(){
+            beforeAll(function(){
+                testFol = new Folder();
+                folName = 'testFolName';
+                testChild = new File(folName, null);
+                testThis = {};
+                
+                getChildSpy = jasmine.createSpy('getChild').and.returnValue(testChild);
+                testThis.getChild = getChildSpy;
+                testFol.getFolder = testFol.getFolder.bind(testThis);
+                
+                returnResult = testFol.getFolder(folName);
+            });
+            
+            it('retrieves the child directory', function(){
+                expect(getChildSpy).toHaveBeenCalledWith(folName);
+            });
+            
+            it('returns null', function(){
+                expect(returnResult).toBe(null);
+            });
+        });
+        
+        describe('is called with a name that is a Folder child of the Folder', function(){
+            beforeAll(function(){
+                testFol = new Folder();
+                folName = 'testFolName';
+                testChild = new Folder(folName);
+                testThis = {};
+                
+                getChildSpy = jasmine.createSpy('getChild').and.returnValue(testChild);
+                testThis.getChild = getChildSpy;
+                testFol.getFolder = testFol.getFolder.bind(testThis);
+                
+                returnResult = testFol.getFolder(folName);
+            });
+            
+            it('retrieves the child directory', function(){
+                expect(getChildSpy).toHaveBeenCalledWith(folName);
+            });
+            
+            it('returns the child Folder', function(){
+                expect(returnResult).toBe(testChild);
+            });
+        });
+    });
 });
 
 describe('Root', function(){
