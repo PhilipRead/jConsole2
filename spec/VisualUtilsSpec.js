@@ -445,3 +445,84 @@ describe('VisualUtils.curDirPrompt', function(){
         system.curFolder = origCurDir;
     });
 });
+
+describe('VisualUtils.optimumListPrinter', function() {
+    var testStrings;
+    
+    describe('is called with no argument', function() {
+        it('does not print any strings', function(){
+            spyOn(VisualUtils, 'execute');
+            
+            VisualUtils.optimumListPrinter();
+            
+            expect(VisualUtils.execute).not.toHaveBeenCalled();
+        });
+    });
+    
+    describe('is called with a null argument', function() {
+        it('does not print any strings', function(){
+            spyOn(VisualUtils, 'execute');
+            
+            VisualUtils.optimumListPrinter(null);
+            
+            expect(VisualUtils.execute).not.toHaveBeenCalled();
+        });
+    });
+    
+    describe('is called with an empty list', function() {
+        it('does not print any strings', function(){
+            testStrings = [];
+            
+            spyOn(VisualUtils, 'execute');
+            
+            VisualUtils.optimumListPrinter(testStrings);
+            
+            expect(VisualUtils.execute).not.toHaveBeenCalled();
+        });
+    });
+    
+    describe('is called with a list of strings', function(){
+        var outputTag;
+        var jQueryTest;
+        var widthSpy;
+        var appendSpy;
+        
+        beforeAll(function(){
+            outputTag = '#output';
+            testStrings = ['testStr1', 'testStr2', 'testStr3'];
+            jQueryTest = {};
+            
+            widthSpy = jasmine.createSpy('width').and.returnValue(1000);
+            jQueryTest.width = widthSpy;
+            appendSpy = jasmine.createSpy('append');
+            jQueryTest.append = appendSpy;
+            
+            spyOn(window, '$').and.returnValue(jQueryTest);
+            spyOn(VisualUtils, 'queuePrint');
+            spyOn(VisualUtils, 'execute');
+            
+            VisualUtils.optimumListPrinter(testStrings);
+        });
+        
+        it('finds the width of the output container', function(){
+            expect(window.$).toHaveBeenCalledWith(outputTag);
+            expect(widthSpy).toHaveBeenCalled();
+        });
+        
+        it('creates at least one new container for list', function(){
+            expect(window.$).toHaveBeenCalledWith('<pre/>');
+        });
+        
+        it('adds the new containers to the output container', function(){
+            expect(appendSpy).toHaveBeenCalled();
+        });
+        
+        it('queues up the print jobs', function(){
+            expect(VisualUtils.queuePrint).toHaveBeenCalled();
+        });
+        
+        it('starts the print jobs', function(){
+            expect(VisualUtils.execute).toHaveBeenCalled();
+        });
+    });
+});
