@@ -129,6 +129,23 @@ function Folder(name) {
             this._children[childKeys[i]].remove();
         }
     };
+    
+    // getChild public function
+    // Retrieves the specified child of the Folder.
+    // @param - childName: The string name of the child being retrieved.
+    // @return - The specified child Directory if it exists, else null.
+    this.getChild = function(childName) {
+        if(!childName) {
+            return null;
+        }
+        
+        var child = this._children[childName];
+        if(!child){
+            return null;
+        }
+        
+        return child;
+    };
 };
 
 Folder.prototype = new Directory();
