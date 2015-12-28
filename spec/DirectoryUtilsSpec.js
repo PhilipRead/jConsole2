@@ -284,6 +284,57 @@ describe('Folder', function(){
             }
         });
     });
+    
+    describe('getChild', function(){
+        var returnResult;
+        var testFol;
+        var childName;
+        var testChild;
+        
+        describe('is called with no arguments', function(){
+            it('returns null', function(){
+                testFol = new Folder();
+                
+                returnResult = testFol.getChild();
+                
+                expect(returnResult).toBe(null);
+            });
+        });
+        
+        describe('is called with a null argument', function(){
+            it('returns null', function(){
+                testFol = new Folder();
+                
+                returnResult = testFol.getChild(null);
+                
+                expect(returnResult).toBe(null);
+            });
+        });
+        
+        describe('is called with a name that does not exist as a child in the Folder', function(){
+            it('returns null', function(){
+                testFol = new Folder();
+                childName = "testChildName";
+                
+                returnResult = testFol.getChild(childName);
+                
+                expect(returnResult).toBe(null);
+            });
+        });
+        
+        describe('is called with a name that does exist as a child in the Folder', function(){
+            it('returns the child Directory', function(){
+                testFol = new Folder();
+                childName = "testChildName";
+                testChild = new Folder(childName);
+                testFol.addChild(testChild);
+                
+                returnResult = testFol.getChild(childName);
+                
+                expect(returnResult).toBe(testChild);
+            });
+        });
+    });
 });
 
 describe('Root', function(){
