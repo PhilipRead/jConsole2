@@ -403,3 +403,45 @@ describe('VisualUtils.returnControl', function(){
         expect(testGet.scrollIntoView).toHaveBeenCalled();
     });
 });
+
+describe('VisualUtils.curDirPrompt', function(){
+    var testCurDir;
+    var testPath;
+    var expectedPrompt;
+    var getPathSpy;
+    var origCurDir;
+    var jQueryTest;
+    var promptTag;
+    var HTML_Spy;
+    
+    beforeAll(function(){
+        testPath = '/testPath/';
+        expectedPrompt = testPath + '>&nbsp';
+        testCurDir = {};
+        jQueryTest = {};
+        promptTag = '#prompt';
+        
+        getPathSpy = jasmine.createSpy('getPath').and.returnValue(testPath);
+        testCurDir.getPath = getPathSpy;
+        origCurDir = system.curFolder;
+        system.curFolder = testCurDir;
+        HTML_Spy = jasmine.createSpy('html');
+        jQueryTest.html = HTML_Spy;
+        spyOn(window, '$').and.returnValue(jQueryTest);
+        
+        VisualUtils.curDirPrompt();
+    });
+    
+    it("gets the current directory's full path", function(){
+        expect(getPathSpy).toHaveBeenCalled();
+    });
+    
+    it('updates the prompt text correctly', function(){
+        expect(window.$).toHaveBeenCalledWith(promptTag);
+        expect(HTML_Spy).toHaveBeenCalledWith(expectedPrompt);
+    });
+    
+    afterAll(function(){
+        system.curFolder = origCurDir;
+    });
+});
