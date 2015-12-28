@@ -1,7 +1,11 @@
-body {
+body, pre {
 	font-family: 'Lucida Console';
 	font-size: 13px;
 	background-color: black;
+}
+
+pre {
+    margin: 0px;
 }
 
 #console {

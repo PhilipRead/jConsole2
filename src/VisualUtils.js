@@ -141,3 +141,48 @@ VisualUtils.curDirPrompt = function() {
     var newPrompt = curPath + '>&nbsp';
     $('#prompt').html(newPrompt);
 };
+
+// optimumListPrinter function
+// Prints a list of strings to the screen in the most space efficent method.
+// @param - strings: The list of strings to print.
+VisualUtils.optimumListPrinter = function(strings) {
+    if(!strings || strings.length === 0) return;
+    var charWidth = 8;
+    var outputWidth = $('#output').width();
+    var numStrs = strings.length;
+    var rows = 1;
+    var cols;
+    var colWidths;
+    for(cols = numStrs; cols > 0; cols = Math.floor(cols/2)) {
+        rows = Math.ceil(numStrs/cols)
+        colWidths = [];
+        for(var col = 0; col < cols; col++) {
+            var maxWidth = 0;
+            for(var i = rows*col; i < rows*(col+1) && i < numStrs; i++) {
+                var curStrWidth = strings[i].length + 2;
+                if(curStrWidth > maxWidth){
+                    maxWidth = curStrWidth;
+                }
+            }
+            colWidths.push(maxWidth);
+        }
+        var rowMax = colWidths.reduce(function(a,b){return a+b;}, 0);
+        if(rowMax*charWidth < outputWidth || cols === 1) { break; }
+    }
+    
+    var tempOutDiv = $('#output');
+    for(var row = 0; row < rows; row++) {
+        var textDatas = [];
+        var nextDivText = '';
+        for(var i = row, j = 0; i < (row+1)+(cols-1)*rows && i < numStrs; i += rows, j++) {
+            var padding = colWidths[j] - strings[i].length;
+            nextDivText += strings[i] + ' '.repeat(padding);
+        }
+        var tempDiv = $('<pre/>');
+        tempOutDiv.append(tempDiv);
+        var nextTextData = new TextData(nextDivText, tempDiv, 10);
+        textDatas.push(nextTextData);
+        VisualUtils.queuePrint(textDatas);
+    }
+    VisualUtils.execute();
+};

@@ -38,7 +38,7 @@ Commands.help = function() {
         var tempString = system.commands[i];
         var tempDiv = $('<div></div>');
         tempOutDiv.append(tempDiv);
-        var nextTextData = new TextData(tempString, tempDiv, 20);
+        var nextTextData = new TextData(tempString, tempDiv, 10);
         textDatas.push(nextTextData);
     }
     VisualUtils.queuePrint(textDatas);
@@ -53,7 +53,7 @@ Commands.commandError = function(command) {
     var errorString = command + ' is not a recognized command on this system.';
     var newDiv = $('<div/>');
     $('#output').append(newDiv);
-    textDatas.push(new TextData(errorString, newDiv, 20));
+    textDatas.push(new TextData(errorString, newDiv, 10));
     VisualUtils.queuePrint(textDatas);
     VisualUtils.execute();
 };

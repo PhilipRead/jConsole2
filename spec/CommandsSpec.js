@@ -134,7 +134,7 @@ describe('Commands.help', function(){
     for(var i = 0; i < system.commands.length; i++) {
         var tempString = system.commands[i];
         var tempDiv = $('<div/>');
-        var nextTextData = new TextData(tempString, tempDiv, 20);
+        var nextTextData = new TextData(tempString, tempDiv, 10);
         textDatas.push(nextTextData);
     }
     
@@ -159,7 +159,7 @@ describe('Commands.commandError', function(){
         var textDatas = [];
         var errorString = command + ' is not a recognized command on this system.';
         var newDiv = $('<div/>');
-        textDatas.push(new TextData(errorString, newDiv, 20));
+        textDatas.push(new TextData(errorString, newDiv, 10));
         
         beforeAll(function(){
             spyOn(VisualUtils, 'queuePrint');
