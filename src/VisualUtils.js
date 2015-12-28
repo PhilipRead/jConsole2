@@ -133,3 +133,11 @@ VisualUtils.returnControl = function() {
     $('#input').on('keydown', KeyUtils.inputKeyDownHandler);
     $('#input').get(0).scrollIntoView();
 };
+
+// curDirPrompt function
+// Visually sets the prompt with the current directories full path.
+VisualUtils.curDirPrompt = function() {
+    var curPath = system.curFolder.getPath();
+    var newPrompt = curPath + '>&nbsp';
+    $('#prompt').html(newPrompt);
+};
