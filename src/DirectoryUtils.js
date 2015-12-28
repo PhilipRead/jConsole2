@@ -146,6 +146,20 @@ function Folder(name) {
         
         return child;
     };
+    
+    // getFolder public function
+    // Retrieves the specified Folder of this Folder.
+    // @param - folderName: The string name of the child folder begin retrieved.
+    // @return - The specified Folder if it exists, else null
+    this.getFolder = function(folderName) {
+        var folder = this.getChild(folderName);
+        
+        if(!folder || !(folder instanceof Folder)) {
+            return null;
+        }
+        
+        return folder;
+    };
 };
 
 Folder.prototype = new Directory();
