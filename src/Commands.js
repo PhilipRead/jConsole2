@@ -24,6 +24,9 @@ Commands.routeCommand = function(command, args) {
         case 'help':
             Commands.help();
             return;
+        case 'ls':
+            Commands.ls();
+            return;
         default:
             Commands.commandError(command);
     }
@@ -47,7 +50,7 @@ Commands.help = function() {
 
 // commandError function
 // Notifies user that the specified command is not recognized on the current system.
-// @param - command: The command string that is unrecognisable
+// @param - command: The command string that is unrecognizable.
 Commands.commandError = function(command) {
     var textDatas = [];
     var errorString = command + ' is not a recognized command on this system.';
@@ -57,3 +60,17 @@ Commands.commandError = function(command) {
     VisualUtils.queuePrint(textDatas);
     VisualUtils.execute();
 };
+
+// ls function
+// Prints all direct children directories of the current directory to the screen.
+Commands.ls = function() {
+    var childNames = system.curFolder.sortedChildNames();
+    if(childNames.length > 0) {
+        VisualUtils.optimumListPrinter(childNames);
+    }
+    else {
+        VisualUtils.returnControl();
+    }
+};
+
+
