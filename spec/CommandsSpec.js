@@ -111,9 +111,25 @@ describe('Commands.routeCommand', function(){
         it('calls the Commands.help function', function(){
             command = 'help';
             args = [];
+            
             spyOn(Commands, 'help');
+            
             Commands.routeCommand(command, args);
+            
             expect(Commands.help).toHaveBeenCalled();
+        });
+    });
+    
+    describe('is called with "ls" command', function(){
+        it('calls the Commands.ls function', function(){
+            command = 'ls';
+            args = [];
+            
+            spyOn(Commands, 'ls');
+            
+            Commands.routeCommand(command, args);
+            
+            expect(Commands.ls).toHaveBeenCalled();
         });
     });
     
@@ -173,6 +189,72 @@ describe('Commands.commandError', function(){
         
         it('starts the execution of the print job', function(){
             expect(VisualUtils.execute).toHaveBeenCalled();
+        });
+    });
+});
+
+describe('Commands.ls', function(){
+    var origCurFol;
+    var testCurFol;
+    var testChildren;
+    var getChildrenSpy;
+    
+    describe('is called when the current folder has children', function(){
+        beforeAll(function(){
+            origCurFol = system.curFolder;
+            testCurFol = {};
+            testChildren = ['testChild1', 'testChild2', 'testChild3'];
+            
+            getChildrenSpy = jasmine.createSpy('sortedChildNames').and.returnValue(testChildren);
+            testCurFol.sortedChildNames = getChildrenSpy;
+            system.curFolder = testCurFol;
+            spyOn(VisualUtils, 'optimumListPrinter');
+            
+            Commands.ls();
+        });
+        
+        it('gets the list of child directories in alphabetical order', function(){
+            expect(getChildrenSpy).toHaveBeenCalled();
+        });
+        
+        it('prints the list of child names', function(){
+            expect(VisualUtils.optimumListPrinter).toHaveBeenCalledWith(testChildren);
+        });
+        
+        afterAll(function(){
+            system.curFolder = origCurFol;
+        });
+    });
+    
+    describe('is called when the current folder has no children', function(){
+        beforeAll(function(){
+            origCurFol = system.curFolder;
+            testCurFol = {};
+            testChildren = [];
+            
+            getChildrenSpy = jasmine.createSpy('sortedChildNames').and.returnValue(testChildren);
+            testCurFol.sortedChildNames = getChildrenSpy;
+            system.curFolder = testCurFol;
+            spyOn(VisualUtils, 'optimumListPrinter');
+            spyOn(VisualUtils, 'returnControl');
+            
+            Commands.ls();
+        });
+        
+        it('gets the list of empty child directories', function(){
+            expect(getChildrenSpy).toHaveBeenCalled();
+        });
+        
+        it('does not attempt to print the list of child names', function(){
+            expect(VisualUtils.optimumListPrinter).not.toHaveBeenCalledWith(testChildren);
+        });
+        
+        it('returns control to the user', function(){
+            expect(VisualUtils.returnControl).toHaveBeenCalled();
+        });
+        
+        afterAll(function(){
+            system.curFolder = origCurFol;
         });
     });
 });
