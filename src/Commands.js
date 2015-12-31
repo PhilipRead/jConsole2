@@ -27,6 +27,9 @@ Commands.routeCommand = function(command, args) {
         case 'ls':
             Commands.ls();
             return;
+        case 'cd':
+            Commands.cd(args);
+            return;
         default:
             Commands.commandError(command);
     }
@@ -71,6 +74,40 @@ Commands.ls = function() {
     else {
         VisualUtils.returnControl();
     }
+};
+
+// cd function
+// Changes the current Folder to the specified Folder path.
+// If the specified Folder does not exist then an error will be printed to the screen.
+// @param paths - The list of paths entered by the user.
+//                Only the first path will be used--all others will be ignored.
+Commands.cd = function(paths) {
+    if(paths.length === 0) {
+        var textDatas = [];
+        var errorString = 'You must specify a folder path to move to.';
+        var newDiv = $('<div/>');
+        $('#output').append(newDiv);
+        textDatas.push(new TextData(errorString, newDiv, 10));
+        VisualUtils.queuePrint(textDatas);
+        VisualUtils.execute();
+        return;
+    }
+    
+    var newFolder;
+    try {
+        newFolder = Commands.parseDirStr(paths[0]);
+    }
+    catch(errorMessage) {
+        var textDatas = [];
+        var newDiv = $('<div/>');
+        $('#output').append(newDiv);
+        textDatas.push(new TextData(errorMessage, newDiv, 10));
+        VisualUtils.queuePrint(textDatas);
+        VisualUtils.execute();
+        return;
+    }
+    
+    system.curFolder = newFolder;
 };
 
 // parseDirStr function

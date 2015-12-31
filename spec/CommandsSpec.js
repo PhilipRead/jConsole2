@@ -133,6 +133,19 @@ describe('Commands.routeCommand', function(){
         });
     });
     
+    describe('is called with "cd" command', function(){
+        it('calls the Commands.cd function with the directory string', function(){
+            command = 'cd';
+            args = ['dirStr'];
+            
+            spyOn(Commands, 'cd');
+            
+            Commands.routeCommand(command, args);
+            
+            expect(Commands.cd).toHaveBeenCalledWith(args);
+        });
+    });
+    
     describe('is called with a string that is not a listed command', function(){
         it('calls the Commands.commandError function with the command string', function(){
             command = 'not_a_command';
@@ -260,6 +273,107 @@ describe('Commands.ls', function(){
     });
 });
 
+describe('Commands.cd', function(){
+    var args;
+    var testTextDatas;
+    var errorString;
+    
+    describe('is called with an empty list', function(){
+        beforeAll(function(){
+            args = [];
+            testTextDatas = [];
+            
+            errorString = 'You must specify a folder path to move to.';
+            testTextDatas.push(new TextData(errorString, $('<div/>'), 10));
+            
+            spyOn(VisualUtils, 'queuePrint');
+            spyOn(VisualUtils, 'execute');
+            
+            Commands.cd(args);
+        });
+        
+        it('queues up an error message to print', function(){
+            expect(VisualUtils.queuePrint).toHaveBeenCalledWith(testTextDatas);
+        });
+        
+        it('begins printing the message', function(){
+            expect(VisualUtils.execute).toHaveBeenCalled();
+        });
+    });
+    
+    describe('is called with a non-empty list', function(){
+        var testDirStr;
+        var origCurFol;
+        
+        describe('where the first item is not a valid Folder path', function(){
+            beforeAll(function(){
+                origCurFol = system.curFolder;
+                args = [];
+                testTextDatas = [];
+                
+                system.curFolder = new Folder('testCurFolder');
+                testDirStr = 'testDirStr';
+                args.push(testDirStr);
+                errorString = testDirStr + ' does not exist';
+                testTextDatas.push(new TextData(errorString, $('<div/>'), 10));
+                
+                spyOn(Commands, 'parseDirStr').and.callThrough();
+                spyOn(VisualUtils, 'queuePrint');
+                spyOn(VisualUtils, 'execute');
+                
+                Commands.cd(args);
+            });
+            
+            it('attempts to retrieve the Folder', function(){
+                expect(Commands.parseDirStr).toHaveBeenCalledWith(testDirStr);
+            });
+            
+            it('queues up an error message to print telling the user which Folder does not exist.', function(){
+                expect(VisualUtils.queuePrint).toHaveBeenCalledWith(testTextDatas);
+            });
+            
+            it('begins printing the message', function(){
+                expect(VisualUtils.execute).toHaveBeenCalled();
+            });
+            
+            afterAll(function(){
+                system.curFolder = origCurFol;
+            });
+        });
+        
+        describe('where the first item is a valid Folder path', function(){
+            var expectedCurFolder;
+            
+            beforeAll(function(){
+                origCurFol = system.curFolder;
+                args = [];
+                
+                system.curFolder = new Folder('testCurFolder');
+                testDirStr = 'testDirStr';
+                args.push(testDirStr);
+                expectedCurFolder = new Folder(testDirStr);
+                system.curFolder.addChild(expectedCurFolder);
+                
+                spyOn(Commands, 'parseDirStr').and.callThrough();
+                
+                Commands.cd(args);
+            });
+            
+            it('retrieves the Folder', function(){
+                expect(Commands.parseDirStr).toHaveBeenCalledWith(testDirStr);
+            });
+            
+            it('changes the current Folder to the retrieved Folder', function(){
+                expect(system.curFolder).toBe(expectedCurFolder);
+            });
+            
+            afterAll(function(){
+                system.curFolder = origCurFol;
+            });
+        });
+    });
+});
+
 describe('Commands.parseDirStr', function(){
     var dirStr;
     var returnResult;
@@ -359,3 +473,4 @@ describe('Commands.parseDirStr', function(){
         });
     });
 });
+
