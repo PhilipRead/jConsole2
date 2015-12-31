@@ -73,4 +73,40 @@ Commands.ls = function() {
     }
 };
 
-
+// parseDirStr function
+// Finds the Directory from the specified directory string.
+// @param - dirStr: The directory string being parsed that represents the full or indirect path from the current Folder.
+// @return The specified Directory if it exists, else null if called with a null or empty string.
+// @throws Error if the Directory does not exist and a message showing what does not exist.
+Commands.parseDirStr = function(dirStr) {
+    if(!dirStr || dirStr === '') return null;
+    
+    var nextParent;
+    var nextChild;
+    if(dirStr[0] === '/') {
+        nextParent = system.root;
+        nextChild = system.root;
+    }
+    else {
+        nextParent = system.curFolder;
+        nextChild = null;
+    }
+    
+    var splitDirStr = dirStr.split('/');
+    for(var i = 0; i < splitDirStr.length; i++) {
+        var nextName = splitDirStr[i];
+        if(nextName === '') continue;
+        
+        nextChild = nextParent.getChild(nextName);
+        
+        if(nextChild === null) {
+            var pathError = splitDirStr.slice(0, i+1).join('/');
+            var errorMessage = pathError + ' does not exist';
+            throw errorMessage;
+        }
+        
+        nextParent = nextChild;
+    }
+    
+    return nextChild;
+};

@@ -197,6 +197,7 @@ describe('Commands.ls', function(){
     var origCurFol;
     var testCurFol;
     var testChildren;
+    var testChild;
     var getChildrenSpy;
     
     describe('is called when the current folder has children', function(){
@@ -254,6 +255,106 @@ describe('Commands.ls', function(){
         });
         
         afterAll(function(){
+            system.curFolder = origCurFol;
+        });
+    });
+});
+
+describe('Commands.parseDirStr', function(){
+    var dirStr;
+    var returnResult;
+    
+    describe('is called with no arguments', function(){
+        it('returns null', function(){
+            returnResult = Commands.parseDirStr();
+            
+            expect(returnResult).toBe(null);
+        });
+    });
+    
+    describe('is called with a null argument', function(){
+        it('returns null', function(){
+            returnResult = Commands.parseDirStr(null);
+            
+            expect(returnResult).toBe(null);
+        });
+    });
+    
+    describe('is called with an empty string', function(){
+        it('returns null', function(){
+            dirStr = '';
+            
+            returnResult = Commands.parseDirStr(dirStr);
+            
+            expect(returnResult).toBe(null);
+        });
+    });
+    
+    describe('is called with a full path string', function(){
+        it('begins searching from the root', function(){
+            var origRoot = system.root;
+            system.root = {};
+            dirStr = '/testChild';
+            testChild = new Folder('testChild');
+            var rootGetChildSpy = jasmine.createSpy('getChild').and.returnValue(testChild);
+            system.root.getChild = rootGetChildSpy;
+            
+            Commands.parseDirStr(dirStr);
+            
+            expect(rootGetChildSpy).toHaveBeenCalled();
+            
+            system.root = origRoot;
+        });
+    });
+    
+    describe('is called with a relative path string', function(){
+        it('begins searching from the current Folder', function(){
+            var origCurFol = system.curFolder;
+            system.curFolder = {};
+            dirStr = 'testChild';
+            testChild = new Folder('testChild');
+            var curGetChildSpy = jasmine.createSpy('getChild').and.returnValue(testChild);
+            system.curFolder.getChild = curGetChildSpy;
+            
+            Commands.parseDirStr(dirStr);
+            
+            expect(curGetChildSpy).toHaveBeenCalled();
+            
+            system.curFolder = origCurFol;
+        });
+    });
+    
+    describe('is called with a path that does not exist', function(){
+        it('throws an error', function(){
+            var origCurFol = system.curFolder;
+            system.curFolder = {};
+            dirStr = 'testChild';
+            var expectedError = dirStr + ' does not exist';
+            var curGetChildSpy = jasmine.createSpy('getChild').and.returnValue(null);
+            system.curFolder.getChild = curGetChildSpy;
+            
+            var callWrapper = function() {
+                Commands.parseDirStr(dirStr);
+            };
+            
+            expect(callWrapper).toThrow(expectedError);
+            
+            system.curFolder = origCurFol;
+        });
+    });
+    
+    describe('is called with a path that does exist', function(){
+        it('returns the specified child Directory', function(){
+            var origCurFol = system.curFolder;
+            system.curFolder = new Folder('testParent');
+            dirStr = 'testChild';
+            var expectedResult = new Folder('testChild');
+            system.curFolder.addChild(expectedResult);
+            
+            returnResult = Commands.parseDirStr(dirStr);
+            
+            expect(returnResult).toBe(expectedResult);
+            
             system.curFolder = origCurFol;
         });
     });
